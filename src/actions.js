@@ -1,6 +1,7 @@
 export const CHANGE_NAME = Symbol('CHANGE_NAME');
-export const CHANGE_EMAIL = Symbol('CHANGE_NAME');
+export const CHANGE_EMAIL = Symbol('CHANGE_EMAIL');
 export const SUBMIT_FORM = Symbol('SUBMIT_FORM');
+export const FETCHING_DATA = Symbol('FETCHING_DATA');
 
 export function changeName(name) {
   return {
@@ -18,8 +19,13 @@ export function changeEmail(email) {
 
 export function fetchData() {
   return dispatch => {
-    dispatch(changeEmail('daniel@ooma.com'));
-    dispatch(changeName('Daniel G'));
+    dispatch({
+      type: FETCHING_DATA,
+    });
+    return Promise.resolve().then(() => {
+      dispatch(changeEmail('daniel@ooma.com'));
+      dispatch(changeName('Daniel G'));
+    });
   };
 }
 

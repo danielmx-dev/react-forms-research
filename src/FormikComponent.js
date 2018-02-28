@@ -2,6 +2,7 @@ import React from 'react';
 import { Container, Form, FormGroup, Label, Input, FormFeedback, FormText, Button } from 'reactstrap';
 import { withFormik } from 'formik';
 import { lifecycle, compose } from 'recompose';
+import { validateUser } from './domain';
 
 const isInvalidFactory = (touched, errors) => field => touched[field] && !!errors[field];
 
@@ -13,7 +14,9 @@ const InnerForm = ({
   handleBlur,
   handleSubmit,
   isSubmitting,
+  ...rest
 }) => {
+  console.log('Rest of the values', rest);
   const isInvalid = isInvalidFactory(touched, errors);
   const inputProps = {onChange: handleChange, onBlur: handleBlur};
   return (
@@ -66,24 +69,9 @@ const FormikComponent = compose(
     enableReinitialize: true,
     // Add a custom validation function (this can be async too!)
     validate: (values, props) => {
-      const errors = {};
-      if (!values.email) {
-        errors.email = 'Email is Required';
-      } else if (
-        !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)
-      ) {
-        errors.email = 'Invalid email address';
-      }
-
-      if (!values.name) {
-        errors.name = 'Name is Required';
-      } else if (
-        !/^[A-Z\s]{2,10}$/i.test(values.name)
-      ) {
-        errors.name = 'Name must be between 2 and 10 characters';
-      }
-      return errors;
+      return validateUser(values);
     },
+    validateOnChange: false,
     // Submission handler
     handleSubmit: (
       values,
